@@ -9,13 +9,23 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <RadioGroup
-        android:id="@+id/radio_list"
-        android:checkedButton="@+id/radio_button_1"
+    <ImageView
+        android:id="@+id/download_image"
         android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_baseline_download_24"
+        />
+
+    <RadioGroup
+        android:id="@+id/radio_list"
+        android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/download_image"
         android:layout_marginStart="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:layout_marginTop="@dimen/large_margin"

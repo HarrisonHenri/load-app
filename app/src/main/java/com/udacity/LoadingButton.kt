@@ -21,20 +21,23 @@ class LoadingButton @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private var widthSize = 0
     private var heightSize = 0
-    private var loadingBackgroundEndPositionValue = 0f
-    private var progressCircleSize = 0f
+
     private var loadingText: CharSequence = ""
     private var loadingTextColor = 0
     private var loadingBackgroundColor = 0
     private var text = ""
     private var defaultText: CharSequence = ""
     private var defaultBackgroundColor = 0
+
+    private var loadingBackgroundEndPositionValue = 0f
+
+    private var progressCircleSize = 0f
     private val progressCircleRect = RectF()
     private var progressCircleBackgroundColor = 0
     private var progressCircleEndAngleValue = 0f
 
     private lateinit var textBounds: Rect
-    private lateinit var buttonBackgroundAnimator: ValueAnimator
+    private lateinit var backgroundAnimator: ValueAnimator
 
     companion object {
         private const val TEXT_OFFSET = 20f
@@ -106,13 +109,13 @@ class LoadingButton @JvmOverloads constructor(
 
     init {
         context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
-            initializeStyleValues()
+            setStyleValues()
         }
         text = defaultText.toString()
         progressCircleBackgroundColor = ContextCompat.getColor(context, R.color.colorAccent)
     }
 
-    private fun TypedArray.initializeStyleValues() {
+    private fun TypedArray.setStyleValues() {
         defaultBackgroundColor =
                 getColor(R.styleable.LoadingButton_defaultBackgroundColor, 0)
         loadingBackgroundColor =
@@ -197,7 +200,7 @@ class LoadingButton @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         progressCircleSize = (min(w, h) / 2f) * 0.5f
-        buttonBackgroundAnimator()
+        setBackgroundAnimator()
     }
 
     override fun performClick(): Boolean {
@@ -209,8 +212,8 @@ class LoadingButton @JvmOverloads constructor(
         return true
     }
 
-    private fun buttonBackgroundAnimator() {
-        buttonBackgroundAnimator =  ValueAnimator.ofFloat(0f, widthSize.toFloat()).apply {
+    private fun setBackgroundAnimator() {
+        backgroundAnimator =  ValueAnimator.ofFloat(0f, widthSize.toFloat()).apply {
             repeatMode = ValueAnimator.RESTART
             repeatCount = ValueAnimator.INFINITE
             interpolator = LinearInterpolator()
@@ -219,14 +222,7 @@ class LoadingButton @JvmOverloads constructor(
                 invalidate()
             }
         }
-        animatorSet.playTogether(progressAnimation, buttonBackgroundAnimator)
-    }
-
-    fun changeButtonState(state: ButtonState) {
-        if (state != buttonState) {
-            buttonState = state
-            invalidate()
-        }
+        animatorSet.playTogether(progressAnimation, backgroundAnimator)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

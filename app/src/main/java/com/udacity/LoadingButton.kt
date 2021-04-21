@@ -225,6 +225,13 @@ class LoadingButton @JvmOverloads constructor(
         animatorSet.playTogether(progressAnimation, backgroundAnimator)
     }
 
+    fun changeButtonState(state: ButtonState) {
+        if (state != buttonState) {
+            buttonState = state
+            invalidate()
+        }
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)

@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         }
     }
+    private lateinit var downloadState: DownloadState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,12 +94,24 @@ class MainActivity : AppCompatActivity() {
                         STATUS_RUNNING -> {
                             loading_button.changeButtonState(Loading)
                         }
-                        STATUS_SUCCESSFUL, STATUS_FAILED -> {
+                        STATUS_FAILED -> {
                             loading_button.changeButtonState(Completed)
+                            changeDownloadState(DownloadState.Failed)
                         }
+                        STATUS_SUCCESSFUL -> {
+                            loading_button.changeButtonState(Completed)
+                            changeDownloadState(DownloadState.Successful)
+                        }
+                        else -> changeDownloadState(DownloadState.Unknown)
                     }
                 }
             }
+        }
+    }
+
+    private fun changeDownloadState(state: DownloadState) {
+        if (!::downloadState.isInitialized || state != downloadState) {
+            downloadState = state
         }
     }
 

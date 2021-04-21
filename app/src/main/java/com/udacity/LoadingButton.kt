@@ -11,9 +11,10 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
+import com.udacity.utils.ButtonState
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
-import com.udacity.ButtonState.*
+import com.udacity.utils.ButtonState.*
 import kotlin.math.min
 
 class LoadingButton @JvmOverloads constructor(

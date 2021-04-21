@@ -18,7 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import com.udacity.ButtonState.*
+import com.udacity.utils.ButtonState.*
+import com.udacity.utils.DownloadState
 
 
 class MainActivity : AppCompatActivity() {

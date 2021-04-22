@@ -2,6 +2,7 @@ package com.udacity
 
 import android.app.DownloadManager
 import android.app.DownloadManager.*
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,34 +12,60 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import com.udacity.utils.ButtonState.*
 import com.udacity.utils.DownloadState
+import com.udacity.utils.createDownloadNotificationChannel
+import com.udacity.utils.sendNotification
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val URL =
+            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+    }
 
     private var downloadID: Long = 0
-    private lateinit var downloadObserver: ContentObserver
+    private var downloadObserver: ContentObserver? = null
     private var fileName = ""
+    private lateinit var downloadState: DownloadState
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            unregisterDownloadObserver()
+            downloadState.takeIf { it != DownloadState.Unknown }?.run {
+                sendDownloadNotification()
+            }
         }
     }
-    private lateinit var downloadState: DownloadState
+
+    private fun sendDownloadNotification() {
+        val notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.createDownloadNotificationChannel(applicationContext)
+        notificationManager.sendNotification(downloadState, fileName, applicationContext)
+    }
+
+    private fun unregisterDownloadObserver() {
+        contentResolver.unregisterContentObserver(downloadObserver!!)
+        downloadObserver = null
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        registerReceiver(receiver, IntentFilter(ACTION_DOWNLOAD_COMPLETE))
         loading_button.setOnClickListener {
             loadingButtonListener()
         }
@@ -83,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         contentResolver.registerContentObserver(
                 "content://downloads/".toUri(),
                 true,
-                downloadObserver
+                downloadObserver!!
         )
     }
 
@@ -114,11 +141,5 @@ class MainActivity : AppCompatActivity() {
         if (!::downloadState.isInitialized || state != downloadState) {
             downloadState = state
         }
-    }
-
-    companion object {
-        private const val URL =
-                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
     }
 }

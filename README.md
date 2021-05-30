@@ -43,7 +43,6 @@ $ git clone https://github.com/HarrisonHenri/load-app
 ## Built With
 
 * [Notification](https://developer.android.com/guide/topics/ui/notifiers/notifications)
-* [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/) with the SafeArgs plugin for parameter passing between fragments
 
 ## Contributing
 
